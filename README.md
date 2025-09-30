@@ -81,3 +81,12 @@ The backend calls Ollama's local REST endpoint (default http://localhost:11434/a
   -  This demo purposely restricts execution to SELECT-only queries.
 
    - Do not point this demo at production DBs without adding auth, rate-limiting, and more robust validation.
+
+   ## Demo
+
+![SQL Copilot Demo](docs/demo.gif)
+
+The animation shows:
+1. User types: *“Show total order amount per customer in March 2023”*  
+2. LLM produces SQL  
+3. Copilot executes query & shows table + chart

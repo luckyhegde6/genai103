@@ -94,4 +94,7 @@ app.post('/api/explain', async (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`SQL Copilot backend running on ${port}`));
+if (require.main === module) {
+  app.listen(port, () => console.log(`Server on ${port}`));
+}
+module.exports = app;
