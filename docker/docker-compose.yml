@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: "postgresql://user:password@db:5432/mydb"
+    depends_on:
+      - db
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "1337:1337"
+    environment:
+      MODEL: "gemma3:4b"
+      DATABASE_URL: "sqlite:///local_db.sqlite" #local sqlite database
+    volumes:
+      - ollama_data:/data #Mount the data volume
+
+  

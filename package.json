@@ -1,9 +1,19 @@
 {
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.13"
+  "name": "genai103-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for SQL Copilot",
+  "scripts": {
+    "start": "docker-compose -f docker/docker-compose.yml up -d frontend",
+    "start-backend": "docker-compose -f docker/docker-compose.yml up -d backend",
+    "stop": "docker-compose -f docker/docker-compose.yml down",
+    "stop-backend": "docker-compose -f docker/docker-compose.yml down --remove-volumes backend",
+    "clean": "docker-compose -f docker/docker-compose.yml down --rmi local && rm -rf docker",
+    "terminate": "docker stop $(docker ps -a -q) && docker-compose -f docker/docker-compose.yml down --rmi local"
   },
-  "dependencies": {
-    "path": "^0.12.7",
-    "react-icons": "^5.5.0"
-  }
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
