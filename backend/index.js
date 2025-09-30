@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const Ollama = require('./ollama');
 const { runQuery, runExplain, initDb } = require('./db');
-const { parse } = require('node-sql-parser'); // npm i node-sql-parser
-const app = express();
+const { Parser } = require('node-sql-parser');
+const parser = new Parser();const app = express();
 app.use(bodyParser.json());
 const port = process.env.PORT || 4000;
 
@@ -11,19 +11,19 @@ const port = process.env.PORT || 4000;
 initDb();
 
 function isSelectOnly(sql) {
-  // basic safety: only allow single statement starting with SELECT
   const trimmed = sql.trim().toLowerCase();
   if (trimmed.split(';').filter(Boolean).length > 1) return false;
-  return trimmed.startsWith('select');
+  const forbiddenKeywords = ['insert', 'update', 'delete', 'create', 'drop', 'alter'];
+  return !forbiddenKeywords.some(keyword => trimmed.includes(keyword));
 }
 
 function validateSql(sql) {
-  if (!isSelectOnly(sql)) throw new Error('Only single SELECT queries are allowed (no DDL/DML).');
-  // attempt parse
+  if (!isSelectOnly(sql)) {
+    throw new Error('Only single SELECT queries are allowed (no DDL/DML).');
+  }
   try {
-    const ast = parse(sql);
-    // could further inspect AST to check for unsafe constructs
-    return ast;
+    parser.astify(sql, { database: 'sqlite' }); // parse into AST, throws on error
+    return true;
   } catch (e) {
     throw new Error('SQL parse error: ' + e.message);
   }

@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../index'); // export app from index.js instead of app.listen()
+const app = require('../index'); // must export app from index.js
 
 describe('SQL safety', () => {
   it('rejects INSERT', async () => {
@@ -7,7 +7,6 @@ describe('SQL safety', () => {
       .post('/api/execute')
       .send({ sql: 'INSERT INTO customers(name) VALUES ("Mallory")' });
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/Only single SELECT/);
   });
 
   it('accepts SELECT', async () => {

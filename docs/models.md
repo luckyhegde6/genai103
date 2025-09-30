@@ -20,9 +20,5 @@ We tested the LLM with the following examples:
   "params": [100],
   "explain": "Selects customers with order amount above 100."
 }
-
-This shows reviewers that you’re thoughtful about reproducibility and safety.
-
----
 ```
 

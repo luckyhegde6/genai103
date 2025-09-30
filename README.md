@@ -20,7 +20,7 @@ A local AI assistant that translates natural language to safe SQL, executes it o
   - `gemma3:4b`
 - (Optional) Postgres if you want to use `DATABASE_URL` instead of SQLite.
 
-Docs about Ollama local API: https://ollama.com/docs and guides. :contentReference[oaicite:1]{index=1}
+Docs about Ollama local API: https://ollama.com/docs and guides.
 
 ## Quickstart (local SQLite demo)
 ### 1. Clone repo
@@ -90,3 +90,34 @@ The animation shows:
 1. User types: *“Show total order amount per customer in March 2023”*  
 2. LLM produces SQL  
 3. Copilot executes query & shows table + chart
+
+## Troubleshooting
+
+1. demo.db (seed with demo tables + rows)
+
+Your backend already checks if sample_db/demo.db exists, and if not it creates + seeds it.
+But if the file is already present and empty (0 bytes), SQLite won’t trigger table creation.
+
+Fix: Delete the empty file and let the backend recreate it:
+```bash
+cd backend/sample_db
+rm demo.db
+cd ..
+node index.js
+```
+It will run CREATE TABLE customers, CREATE TABLE orders, and insert Alice/Bob with some orders. Then you’ll have a small but working dataset.
+
+If you want to ship a prebuilt DB in your repo so people don’t need to bootstrap:
+Run sqlite3 demo.db and paste:
+```sql
+CREATE TABLE customers(id INTEGER PRIMARY KEY, name TEXT, signup_date TEXT);
+INSERT INTO customers(name, signup_date) VALUES ('Alice','2023-01-01'), ('Bob','2023-02-15');
+
+CREATE TABLE orders(id INTEGER PRIMARY KEY, customer_id INTEGER, amount REAL, created_at TEXT);
+INSERT INTO orders(customer_id, amount, created_at) VALUES
+(1, 120.5, '2023-03-01'),
+(2, 15.99, '2023-03-05');
+```
+
+Then exit and the demo.db will have the tables + rows.
+That way the repo already has a non-empty demo.db.
